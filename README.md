@@ -63,16 +63,16 @@ namespace App.Views.Medicine
 {
     public class Create : View
     {
+        public Create()
+        {
+        }
+
+        public Create(Dictionary<string, object> data) : base(data)
+        {
+        }
+
         protected override void Print()
         {
-            public Create()
-            {
-            }
-
-            public Create(Dictionary<string, object> data) : base(data)
-            {
-            }
-
             PrintMessage();
 
             Console.WriteLine("Welcome to ConsoleMVC");
