@@ -96,6 +96,8 @@ namespace App.Views.Medicine
 
 ## Initial Command
 
+To print the initial screen `app.InitialCommand` must be set
+
 `App\Program.cs`
 
 ```
