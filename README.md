@@ -105,6 +105,8 @@ app.InitailCommand = ("0", new MedicineController(), "Index");
 ```
 
 ## Exit Command
+Which command exits the app can be set at `app.ExitCommand`.
+Default exit command is "q".
 
 `App\Program.cs`
 
