@@ -58,9 +58,9 @@ namespace App.Controllers
 
 ```
 using ConsoleMVC.Views;
-using Pharmacy.Controllers;
+using App.Controllers;
 
-namespace Pharmacy.Views.Medicine
+namespace App.Views.Medicine
 {
     internal class Index : View
     {
@@ -96,9 +96,9 @@ namespace Pharmacy.Views.Medicine
 using ConsoleMVC.Inputs;
 using ConsoleMVC.Inputs.Validations;
 using ConsoleMVC.Views;
-using Pharmacy.Controllers;
+using App.Controllers;
 
-namespace Pharmacy.Views.Medicine
+namespace App.Views.Medicine
 {
     internal class Create : View
     {
