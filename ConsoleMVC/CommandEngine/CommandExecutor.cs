@@ -40,12 +40,26 @@ namespace ConsoleMVC.CommandEngine
             return parameters.ToArray();
         }
 
-        public View ExecuteCommand(string input)
+        object[] CreateParameters(Dictionary<string, object> request, string input)
+        {
+            object[] parameters = null;
+
+            if (request != null && request.Count > 0)
+                parameters = new object[] { request };
+
+            if (parameters != null)
+                return parameters.Concat(ExtractParameters(input)).ToArray();
+            else
+                return ExtractParameters(input);
+        }
+
+        public View ExecuteCommand(string input, Dictionary<string, object> request)
         {
             try
             {
                 var (controller, action) = _commandRegistry.Get(input);
-                return InvokeAction(controller, action, ExtractParameters(input));
+
+                return InvokeAction(controller, action, CreateParameters(request, input));
             }
             catch (Exception ex)
             {

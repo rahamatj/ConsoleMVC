@@ -7,6 +7,6 @@ namespace ConsoleMVC.CommandEngine
 {
     public interface ICommandExecutor : IContainable
     {
-        View ExecuteCommand(string input);
+        View ExecuteCommand(string input, Dictionary<string, object> request = null);
     }
 }

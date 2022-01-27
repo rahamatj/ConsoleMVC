@@ -8,7 +8,7 @@ namespace ConsoleMVC.Container
 {
     public class AppContainer : IAppContainer
     {
-        Dictionary<string, IContainable> _container = new Dictionary<string, IContainable>();
+        readonly Dictionary<string, IContainable> _container = new Dictionary<string, IContainable>();
 
         public void Register<T>(IContainable containable) where T : IContainable
         {

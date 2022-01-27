@@ -6,7 +6,7 @@ namespace ConsoleMVC.CommandEngine
 {
     public class CommandRegistry : ICommandRegistry
     {
-        Dictionary<string, (IController controller, string action)> _register = new Dictionary<string, (IController controller, string action)>();
+        readonly Dictionary<string, (IController controller, string action)> _register = new Dictionary<string, (IController controller, string action)>();
 
         public void RegisterCommand(string command, IController controller, string action)
         {
@@ -15,7 +15,10 @@ namespace ConsoleMVC.CommandEngine
 
         public void RegisterCommands(Dictionary<string, (IController controller, string action)> register)
         {
-            _register = register;
+            _register.Clear();
+
+            foreach (var command in register)
+                _register.Add(command.Key, command.Value);
         }
 
         public (IController controller, string action) Get(string key)

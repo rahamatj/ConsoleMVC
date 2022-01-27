@@ -9,6 +9,7 @@
 ```
 using ConsoleMVC.Controllers;
 using ConsoleMVC.Views;
+using ConsoleMVC.Messages;
 
 namespace App.Controllers
 {
@@ -38,14 +39,14 @@ namespace App.Controllers
             }
         }
 
-        public View Store(object name, object quantity)
+        public View Store(Dictionary<string, object> request)
         {
-            var message = StoreMedicine(name, quantity);
+            var message = StoreMedicine(request["name"], request["quantity"]);
 
             var data = new Dictionary<string, object>();
             data.Add("message", message);
 
-            return new Views.Medicine.Create(data);
+            return new Views.Medicine.Index(data);
         }
     }
 }
@@ -53,21 +54,21 @@ namespace App.Controllers
 
 ## View Example
 
-`App\Views\Medicine\Create.cs`
+`App\Views\Medicine\Index.cs`
 
 ```
-using App.Controllers;
 using ConsoleMVC.Views;
+using Pharmacy.Controllers;
 
-namespace App.Views.Medicine
+namespace Pharmacy.Views.Medicine
 {
-    public class Create : View
+    internal class Index : View
     {
-        public Create()
+        public Index()
         {
         }
 
-        public Create(Dictionary<string, object> data) : base(data)
+        public Index(Dictionary<string, object> data) : base(data)
         {
         }
 
@@ -75,24 +76,58 @@ namespace App.Views.Medicine
         {
             PrintMessage();
 
-            Console.WriteLine("Welcome to ConsoleMVC");
-
-            Console.WriteLine("Store: s {name} {quantity}");
-            Console.WriteLine("e.g. s {Napa} {20}");
-            Console.WriteLine("Back to Index: i");
-            Console.WriteLine("Exit: q");
+            Console.WriteLine();
+            Console.WriteLine("(a) Add Medicine");
+            Console.WriteLine("(q) Exit");
         }
 
         protected override void RegisterCommands()
         {
-            var medicineController = new MedicineController();
+            RegisterCommand("a", new MedicineController(), "Create");
+        }
+    }
+}
 
-            RegisterCommand("s {name} {quantity}", medicineController, "Store");
-            RegisterCommand("i", medicineController, "Index");
+```
+
+`App\Views\Medicine\Create.cs`
+
+```
+using ConsoleMVC.Inputs;
+using ConsoleMVC.Inputs.Validations;
+using ConsoleMVC.Views;
+using Pharmacy.Controllers;
+
+namespace Pharmacy.Views.Medicine
+{
+    internal class Create : View
+    {
+        protected override void Print()
+        {
+            Console.WriteLine();
+            Console.WriteLine("Add medicine:");
+
+            _request["name"] = Input.Prompt("Enter name: ", new IValidation[] 
+            {
+                new NotEmpty()
+            });
+
+            _request["quantity"] = Input.Prompt("Enter quantity: ", new IValidation[] 
+            {
+                new NotEmpty(),
+                new PositiveInteger()
+            });
+        }
+
+        protected override void RegisterCommands()
+        {
+            RegisterNextCommand("s", new MedicineController(), "Store");
         }
     }
 }
 ```
+
+
 
 ## Initial Command
 

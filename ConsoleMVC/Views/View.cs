@@ -1,7 +1,6 @@
 ﻿
 using ConsoleMVC.Controllers;
-using ConsoleMVC.Views.Messages;
-using System.Collections;
+using ConsoleMVC.Messages;
 
 namespace ConsoleMVC.Views
 {
@@ -9,7 +8,10 @@ namespace ConsoleMVC.Views
     {
         Dictionary<string, (IController controller, string action)> _commands = new Dictionary<string, (IController controller, string action)>();
 
-        protected Dictionary<string, object> _data;
+        protected readonly Dictionary<string, object> _request = new Dictionary<string, object>();
+        protected readonly Dictionary<string, object> _data;
+
+        protected string NextCommand { get; set; } = null;
 
         public View()
         {
@@ -23,6 +25,12 @@ namespace ConsoleMVC.Views
         protected void RegisterCommand(string command, IController controller, string action)
         {
             _commands.Add(command, (controller, action));
+        }
+
+        protected void RegisterNextCommand(string command, IController controller, string action)
+        {
+            RegisterCommand(command, controller, action);
+            NextCommand = command;
         }
 
         protected virtual void PrintMessage()
@@ -42,12 +50,12 @@ namespace ConsoleMVC.Views
         {
         }
 
-        public Dictionary<string, (IController controller, string action)> Run()
+        public (Dictionary<string, (IController controller, string action)> commands, string nextCommand, Dictionary<string, object> request) Run()
         {
             RegisterCommands();
             Print();
 
-            return _commands;
+            return (_commands, NextCommand, _request);
         }
     }
 }

@@ -2,6 +2,7 @@
 using ConsoleMVC.CommandEngine;
 using ConsoleMVC.Container;
 using ConsoleMVC.Controllers;
+using ConsoleMVC.Messages;
 
 namespace ConsoleMVC
 {
@@ -26,6 +27,7 @@ namespace ConsoleMVC
 
         string AskForInput()
         {
+            Console.WriteLine();
             Console.Write("Enter Command: ");
 
             string input = String.Empty;
@@ -36,7 +38,10 @@ namespace ConsoleMVC
 
             while (!commandRegistry.IsCommandValid(input) && input != ExitCommand)
             {
-                Console.WriteLine("Please enter a valid command!");
+                var alertMessage = new AlertMessage("Please enter a valid command!");
+                alertMessage.Print();
+
+                Console.WriteLine();
                 Console.Write("Enter Command: ");
                 input = Console.ReadLine();
             }
@@ -44,9 +49,18 @@ namespace ConsoleMVC
             return input;
         }
 
+        string NextCommand(string nextCommand)
+        {
+            if (nextCommand != null)   
+                return nextCommand;
+            
+            return AskForInput();
+        }
+
         void Process()
         {
             string input = InitailCommand.command;
+            Dictionary<string, object> request = null;
 
             var commandExecutor = _container.Get<ICommandExecutor>();
             var commandRegistry = _container.Get<ICommandRegistry>();
@@ -55,10 +69,12 @@ namespace ConsoleMVC
 
             while (input != ExitCommand)
             {
-                var view = commandExecutor.ExecuteCommand(input);
-                var commands = view.Run();
-                commandRegistry.RegisterCommands(commands);
-                input = AskForInput();
+                var view = commandExecutor.ExecuteCommand(input, request);
+                var (c, nc, r) = view.Run();
+                request = r;
+                commandRegistry.RegisterCommands(c);
+
+                input = NextCommand(nc);
             }
         }
 
